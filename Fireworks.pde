@@ -2,6 +2,8 @@ ArrayList<Effect> balls;
 ArrayList<Effect> streaks;
 ArrayList<PVector> stars;
 PVector look;
+Planet moon;
+Planet venus;
 
 void setup()
 {
@@ -16,6 +18,8 @@ void setup()
   streaks = new ArrayList<Effect>();
   stars = new ArrayList<PVector>();
   look = new PVector(0, height * .75, -width/2);
+  moon = new Planet(PI,"moon.jpg");
+  venus = new Planet(0,"venus.jpg");
 
   //Set location for stars
   for (int i = 0; i < 1000; i++)
@@ -25,10 +29,10 @@ void setup()
     
     do
     {
-      temp = new PVector(random(-width * 2, width * 2),random(-width * 2, width * 2),random(-width * 2, width * 2));
+      temp = new PVector(random(-width * 3, width * 3),random(-width * 3, width * 3),random(-width * 3, width * 3));
       dist = dist(0, 0, 0, temp.x, temp.y, temp.z);
     }
-    while (dist < width * 1.5 || dist > width * 2);
+    while (dist < width * 2.5 || dist > width * 3);
 
     stars.add(temp);
   }
@@ -53,6 +57,7 @@ void draw()
 //Sets the viewing point
 public void setCamera()
 {
+  //Finds midpoint
   if (balls.size() > 0)
   {
     PVector total = new PVector(0, 0, 0);
@@ -61,7 +66,10 @@ public void setCamera()
       total.add(balls.get(i).loc);
 
     look = total.div(balls.size());
-  } else if (streaks.size() == 0)
+  } 
+  
+  //Looks at base
+  else if (streaks.size() == 0)
     look = new PVector(0, height * .75, -width/2);
 
   perspective(PI/2, float(width)/height, 0.01, width * 3);
@@ -80,12 +88,16 @@ public void renderWorld()
     sphere(3);
     popMatrix();
   }
+  
+  //Render planets
+  moon.render();
+  venus.render();
 
   //Grass floor
   pushMatrix();
   translate(0, height * .75, -width/2);
   fill(100, 255, 50);
-  box(width * 3, 1, width);
+  box(width * 4, 1, width);
   popMatrix();
 }
 

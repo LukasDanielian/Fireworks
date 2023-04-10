@@ -28,7 +28,7 @@ class Effect
     {
       vel = new PVector(random(-12, 12), random(-12, 12), random(-12, 12));
     }
-    while(abs(vel.x) + abs(vel.z) > 20);
+    while(abs(vel.x) + abs(vel.z) > 18);
   }
 
   //Render single sphere
