@@ -100,7 +100,7 @@ public void renderEffects()
 
     if (temp.isDead())
     {
-      for (int j = 0; j < random(100, 200); j++)
+      for (int j = 0; j < 300; j++)
         streaks.add(new Effect(temp));
 
       balls.remove(i);
