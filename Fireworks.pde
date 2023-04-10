@@ -1,5 +1,5 @@
-ArrayList<Ball> balls;
-ArrayList<Ball> streaks;
+ArrayList<Effect> balls;
+ArrayList<Effect> streaks;
 ArrayList<PVector> stars;
 PVector snapBack;
 float lookX;
@@ -8,19 +8,21 @@ float lookZ;
 
 void setup()
 {
+  //Settings
   fullScreen(P3D);
   shapeMode(CENTER);
   textAlign(CENTER, CENTER);
   sphereDetail(5);
   colorMode(HSB);
-
-  balls = new ArrayList<Ball>();
-  streaks = new ArrayList<Ball>();
+  
+  balls = new ArrayList<Effect>();
+  streaks = new ArrayList<Effect>();
   stars = new ArrayList<PVector>();
   lookX = 0;
   lookY = height * .75;
   lookZ = -width/2;
 
+  //Set location for stars
   for (int i = 0; i < 1000; i++)
   {
     float x = random(-width * 2, width * 2);
@@ -44,6 +46,7 @@ void draw()
 {
   background(0);
 
+  //Point at firework
   if (balls.size() > 0)
   {
     lookX = balls.get(0).x;
@@ -51,6 +54,7 @@ void draw()
     lookZ = (-width/2) + balls.get(0).z;
   } 
   
+  //Point at ground
   else if (streaks.size() == 0)
   {
     lookX = 0;
@@ -58,9 +62,11 @@ void draw()
     lookZ = -width/2;
   }
 
+  //Set camera
   perspective(PI/2, float(width)/height, 0.01, width * 3);
   camera(0, height * .7, 0, lookX, lookY, lookZ, 0, 1, 0);
   
+  //Render stars
   for(int i = 0; i < stars.size(); i++)
   {
     pushMatrix();
@@ -70,33 +76,37 @@ void draw()
     popMatrix();
   }
 
+  //Grass floor
   pushMatrix();
   translate(0, height * .75, -width/2);
   fill(100, 255, 50);
   box(width * 3, 1, width);
   popMatrix();
 
+  //Launch firework
   if (frameCount % 250 == 0)
-    balls.add(new Ball(0, height * .75, -width/2, random(0, 255)));
+    balls.add(new Effect(0, height * .75, -width/2, random(0, 255)));
 
+  //Render all launch particles
   for (int i = 0; i < balls.size(); i++)
   {
-    Ball temp = balls.get(i);
+    Effect temp = balls.get(i);
     temp.render();
 
     if (temp.isDead())
     {
       for (int j = 0; j < random(100, 200); j++)
-        streaks.add(new Ball(temp));
+        streaks.add(new Effect(temp));
 
       balls.remove(i);
       i--;
     }
   }
 
+  //Render exsplosive particles
   for (int i = 0; i < streaks.size(); i++)
   {
-    Ball temp = streaks.get(i);
+    Effect temp = streaks.get(i);
     temp.render();
 
     if (temp.isDead())
@@ -104,60 +114,5 @@ void draw()
       streaks.remove(i);
       i--;
     }
-  }
-}
-
-class Ball
-{
-  float x, y, z;
-  float xMover, yMover, zMover, speed;
-  float size, sizeChanger;
-  float hue;
-
-  public Ball(float x, float y, float z, float hue)
-  {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.hue = hue;
-    xMover = random(-5, 5);
-    yMover = random(-25, -15);
-    zMover = random(-5, 5);
-    speed = .1;
-    size = 10;
-    sizeChanger = .1;
-  }
-
-  public Ball(Ball temp)
-  {
-    x = temp.x;
-    y = temp.y;
-    z = temp.z;
-    hue = temp.hue;
-    xMover = random(-12, 12);
-    yMover = random(-12, 12);
-    zMover = random(-12, 12);
-    size = random(10, 15);
-    sizeChanger = .25;
-  }
-
-  void render()
-  {
-    noStroke();
-    fill(hue, 255, 255);
-    pushMatrix();
-    translate(x, y, z);
-    sphere(size);
-    popMatrix();
-    x += xMover;
-    y += yMover;
-    z += zMover;
-    yMover += speed;
-    size -= sizeChanger;
-  }
-
-  boolean isDead()
-  {
-    return size <= 0;
   }
 }
