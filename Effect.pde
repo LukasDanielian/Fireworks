@@ -1,49 +1,40 @@
 class Effect
 {
-  float x, y, z;
-  float xMover, yMover, zMover, speed;
-  float size, sizeChanger;
-  float hue;
+  PVector loc,vel;
+  float speed, size, sizeChanger, hue;
 
+  //Pre explosion
   public Effect(float x, float y, float z, float hue)
   {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+    loc = new PVector(x,y,z);
+    vel = new PVector(random(-5, 5),random(-25, -15),random(-5, 5));
     this.hue = hue;
-    xMover = random(-5, 5);
-    yMover = random(-25, -15);
-    zMover = random(-5, 5);
     speed = .1;
     size = 10;
     sizeChanger = .1;
   }
 
+  //Post explosion
   public Effect(Effect temp)
   {
-    x = temp.x;
-    y = temp.y;
-    z = temp.z;
+    loc = new PVector(temp.loc.x,temp.loc.y,temp.loc.z);
+    vel = new PVector(random(-12, 12),random(-12, 12),random(-12, 12));
     hue = temp.hue;
-    xMover = random(-12, 12);
-    yMover = random(-12, 12);
-    zMover = random(-12, 12);
     size = random(10, 15);
-    sizeChanger = .25;
+    sizeChanger = .20;
   }
 
+  //Render single sphere
   void render()
   {
     noStroke();
     fill(hue, 255, 255);
     pushMatrix();
-    translate(x, y, z);
+    translate(loc.x,loc.y,loc.z);
     sphere(size);
     popMatrix();
-    x += xMover;
-    y += yMover;
-    z += zMover;
-    yMover += speed;
+    loc.add(vel);
+    vel.y += speed;
     size -= sizeChanger;
   }
 

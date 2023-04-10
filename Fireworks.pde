@@ -1,10 +1,7 @@
 ArrayList<Effect> balls;
 ArrayList<Effect> streaks;
 ArrayList<PVector> stars;
-PVector snapBack;
-float lookX;
-float lookY;
-float lookZ;
+PVector look;
 
 void setup()
 {
@@ -14,31 +11,26 @@ void setup()
   textAlign(CENTER, CENTER);
   sphereDetail(5);
   colorMode(HSB);
-  
+
   balls = new ArrayList<Effect>();
   streaks = new ArrayList<Effect>();
   stars = new ArrayList<PVector>();
-  lookX = 0;
-  lookY = height * .75;
-  lookZ = -width/2;
+  look = new PVector(0, height * .75, -width/2);
 
   //Set location for stars
   for (int i = 0; i < 1000; i++)
   {
-    float x = random(-width * 2, width * 2);
-    float y = random(-width * 2, width * 2);
-    float z = random(-width * 2, width * 2);
-    float dist = dist(0, 0, 0, x, y, z);
-
-    while (dist < width * 1.5 || dist > width * 2)
-    {
-      x = random(-width * 2, width * 2);
-      y = random(-width * 2, width  * 2);
-      z = random(-width * 2, width * 2);
-      dist = dist(0, 0, 0, x, y, z);
-    }
+    PVector temp;
+    float dist;
     
-    stars.add(new PVector(x,y,z));
+    do
+    {
+      temp = new PVector(random(-width * 2, width * 2),random(-width * 2, width * 2),random(-width * 2, width * 2));
+      dist = dist(0, 0, 0, temp.x, temp.y, temp.z);
+    }
+    while (dist < width * 1.5 || dist > width * 2);
+
+    stars.add(temp);
   }
 }
 
@@ -46,31 +38,44 @@ void draw()
 {
   background(0);
 
-  //Point at firework
+  setCamera();
+  renderWorld();
+  renderEffects();
+
+  //Launch firework
+  if (frameCount % 250 == 0)
+  {
+    for (int i = 0; i < random(1, 10); i++)
+      balls.add(new Effect(0, height * .75, -width/2, random(0, 255)));
+  }
+}
+
+//Sets the viewing point
+public void setCamera()
+{
   if (balls.size() > 0)
   {
-    lookX = balls.get(0).x;
-    lookY = (height * .75) + balls.get(0).y - width;
-    lookZ = (-width/2) + balls.get(0).z;
-  } 
-  
-  //Point at ground
-  else if (streaks.size() == 0)
-  {
-    lookX = 0;
-    lookY = height * .75;
-    lookZ = -width/2;
-  }
+    PVector total = new PVector(0, 0, 0);
 
-  //Set camera
+    for (int i = 0; i < balls.size(); i++)
+      total.add(balls.get(i).loc);
+
+    look = total.div(balls.size());
+  } else if (streaks.size() == 0)
+    look = new PVector(0, height * .75, -width/2);
+
   perspective(PI/2, float(width)/height, 0.01, width * 3);
-  camera(0, height * .7, 0, lookX, lookY, lookZ, 0, 1, 0);
-  
+  camera(0, height * .7, 0, look.x, look.y, look.z, 0, 1, 0);
+}
+
+//Renders all background items
+public void renderWorld()
+{
   //Render stars
-  for(int i = 0; i < stars.size(); i++)
+  for (int i = 0; i < stars.size(); i++)
   {
     pushMatrix();
-    translate(stars.get(i).x,stars.get(i).y,stars.get(i).z);
+    translate(stars.get(i).x, stars.get(i).y, stars.get(i).z);
     fill(255);
     sphere(3);
     popMatrix();
@@ -82,11 +87,11 @@ void draw()
   fill(100, 255, 50);
   box(width * 3, 1, width);
   popMatrix();
+}
 
-  //Launch firework
-  if (frameCount % 250 == 0)
-    balls.add(new Effect(0, height * .75, -width/2, random(0, 255)));
-
+//Renders all effects from firework
+public void renderEffects()
+{
   //Render all launch particles
   for (int i = 0; i < balls.size(); i++)
   {
