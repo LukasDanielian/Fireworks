@@ -51,7 +51,7 @@ void draw()
   //Launch firework
   if (frameCount % 250 == 0)
   {
-    for (int i = 0; i < random(1, 10); i++)
+    for (int i = 0; i < random(10, 20); i++)
       balls.add(new Effect(0, height * .75, -width/2, random(0, 255)));
   }
 }

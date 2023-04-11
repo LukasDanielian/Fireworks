@@ -8,7 +8,7 @@ class Effect
   public Effect(float x, float y, float z, float hue)
   {
     loc = new PVector(x, y, z);
-    vel = new PVector(random(-10, 10), random(-50, -35), random(-10, 10));
+    vel = new PVector(random(-20, 20), random(-50, -35), random(-20, 20));
     this.hue = hue;
     speed = .1;
     size = 10;
