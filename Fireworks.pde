@@ -2,8 +2,10 @@ ArrayList<Effect> balls;
 ArrayList<Effect> streaks;
 ArrayList<PVector> stars;
 PVector look;
+PVector march;
 Planet moon;
 Planet venus;
+boolean moveDown;
 
 void setup()
 {
@@ -68,12 +70,24 @@ public void setCamera()
     look = total.div(balls.size());
   } 
   
-  //Looks at base
-  else if (streaks.size() == 0)
-    look = new PVector(0, height * .75, -width/2);
+  //Start looking back donw
+  else if(streaks.size() == 0 && !moveDown)
+  {
+    march = new PVector(0 - look.x, height * .75 - look.y, -width/2 - look.z).div(40);
+    moveDown = true;
+  }
+  
+  //Looks back down
+  if(moveDown)
+  {
+    if(look.y < height * .75)
+      look.add(march);
+    else
+      moveDown = false;
+  }
 
-  perspective(PI/2, float(width)/height, 0.01, width * 3);
-  camera(0, height * .7, 0, look.x, look.y, look.z, 0, 1, 0);
+  perspective(PI/2, float(width)/height, 0.01, width * 4);
+  camera(0, height * .7, 0,     look.x, look.y, look.z,     0, 1, 0);
 }
 
 //Renders all background items
@@ -85,7 +99,7 @@ public void renderWorld()
     pushMatrix();
     translate(stars.get(i).x, stars.get(i).y, stars.get(i).z);
     fill(255);
-    sphere(3);
+    sphere(7);
     popMatrix();
   }
   

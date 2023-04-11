@@ -26,6 +26,6 @@ class Planet
     
     loc.x = (sin(theta) * (width * 2)) + size;
     loc.y = (cos(theta) * (width * 2)) + height * .75;
-    theta += .01;
+    theta += .001;
   }
 }
