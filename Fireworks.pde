@@ -31,7 +31,7 @@ void setup()
     
     do
     {
-      temp = new PVector(random(-width * 3, width * 3),random(-width * 3, width * 3),random(-width * 3, width * 3));
+      temp = new PVector(random(-width * 3, width * 3),random(-width * 3, height * .75),random(-width * 3, width * 3));
       dist = dist(0, 0, 0, temp.x, temp.y, temp.z);
     }
     while (dist < width * 2.5 || dist > width * 3);
@@ -86,7 +86,7 @@ public void setCamera()
       moveDown = false;
   }
 
-  perspective(PI/2, float(width)/height, 0.01, width * 4);
+  perspective(PI/2, float(width)/height, 0.01, width * 10);
   camera(0, height * .7, 0,     look.x, look.y, look.z,     0, 1, 0);
 }
 
@@ -109,9 +109,9 @@ public void renderWorld()
 
   //Grass floor
   pushMatrix();
-  translate(0, height * .75, -width/2);
+  translate(0, height * .75, 0);
   fill(100, 255, 50);
-  box(width * 4, 1, width);
+  box(width * 4, 1, width * 4);
   popMatrix();
 }
 
